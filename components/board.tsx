@@ -1,13 +1,4 @@
-import {
-	Line,
-	vec,
-	drawAsImage,
-	Group,
-	Rect,
-	rect,
-	Skia,
-	LinearGradient,
-} from "@shopify/react-native-skia";
+import { Line, vec, LinearGradient } from "@shopify/react-native-skia";
 import { useWindowDimensions } from "react-native";
 import { colors } from "../constants/colors";
 import { GRID_NUM } from "../constants/values";
@@ -25,21 +16,19 @@ interface Props {
 
 const GridLine = ({ startPos, endPos }: Props) => {
 	return (
-		<Group>
-			<Line
-				p1={vec(startPos.x, startPos.y)}
-				p2={vec(endPos.x, endPos.y)}
-				color={colors.greenBlue}
-				style="stroke"
-				strokeWidth={1}
-			>
-				<LinearGradient
-					start={vec(startPos.x, startPos.y)}
-					end={vec(endPos.x, endPos.y)}
-					colors={[`${colors.greenBlue}00`, colors.greenBlue]}
-				/>
-			</Line>
-		</Group>
+		<Line
+			p1={vec(startPos.x, startPos.y)}
+			p2={vec(endPos.x, endPos.y)}
+			color={colors.greenBlue}
+			style="stroke"
+			strokeWidth={1}
+		>
+			<LinearGradient
+				start={vec(startPos.x, startPos.y)}
+				end={vec(endPos.x, endPos.y)}
+				colors={[`${colors.greenBlue}00`, colors.greenBlue]}
+			/>
+		</Line>
 	);
 };
 
@@ -48,7 +37,7 @@ export const Board = () => {
 	const gridSize = screenWidth / GRID_NUM;
 
 	return (
-		<Group>
+		<>
 			{[...Array(GRID_NUM - 1).keys()].map((_, index) => {
 				const x = (index + 1) * gridSize;
 				return (
@@ -59,6 +48,6 @@ export const Board = () => {
 					/>
 				);
 			})}
-		</Group>
+		</>
 	);
 };

@@ -1,17 +1,18 @@
-import { Group, Text as SkiaText, useFont } from "@shopify/react-native-skia";
+import { Text as SkiaText, useFont } from "@shopify/react-native-skia";
 import { colors } from "../constants/colors";
 
 interface Props {
 	text: string;
 	x: number;
 	y: number;
+	size?: number;
 }
 
-export const Text = ({ text, x, y }: Props) => {
-	const font = useFont(require("../assets/fonts/Gilroy-ExtraBold.ttf"), 24);
+export const Text = ({ text, x, y, size = 24 }: Props) => {
+	const font = useFont(require("../assets/fonts/Gilroy-ExtraBold.ttf"), size);
 
 	return (
-		<Group>
+		<>
 			<SkiaText
 				x={x}
 				y={y}
@@ -22,6 +23,6 @@ export const Text = ({ text, x, y }: Props) => {
 				strokeWidth={3}
 			/>
 			<SkiaText x={x} y={y} text={text} font={font} color={colors.white} />
-		</Group>
+		</>
 	);
 };
