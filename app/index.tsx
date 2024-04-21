@@ -4,7 +4,6 @@ import { colors } from "../constants/colors";
 import { Board } from "../components/board";
 import { PirateShip } from "../components/pirate-ship";
 import { MarineShip } from "../components/marine-ship";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { ATBBar } from "../components/atb-bar";
 import {
 	ATB_ACTION_POINT,
@@ -34,15 +33,16 @@ import {
 } from "react-native-gesture-handler";
 import { Missile } from "../components/missile";
 import { router } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function App() {
 	const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 
 	const [timer, setTimer] = useState(DEFAULT_TIMER);
-	const [showMissile, setShowMissile] = useState(false);
 
 	const atbGauge = useSharedValue(0);
 	const lanePos = useSharedValue(2);
+	const firingMissile = useSharedValue(false);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -111,10 +111,7 @@ export default function App() {
 
 	const tapGesture = Gesture.Tap().onStart(() => {
 		if (atbGauge.value >= ATB_ACTION_POINT) {
-			runOnJS(setShowMissile)(true);
-			// setTimeout(() => {
-			// 	runOnJS(setShowMissile)(false);
-			// }, MISSILE_SPEED);
+			firingMissile.value = true;
 			cancelAnimation(atbGauge);
 			atbGauge.value = atbGauge.value - ATB_ACTION_POINT;
 			runOnJS(runAtbGauge)();
@@ -122,8 +119,11 @@ export default function App() {
 	});
 
 	return (
-		<GestureHandlerRootView style={{ flex: 1 }}>
-			<SafeAreaView style={{ flex: 1, backgroundColor: colors.aero }}>
+		<SafeAreaView
+			edges={["top"]}
+			style={{ flex: 1, backgroundColor: colors.aero }}
+		>
+			<GestureHandlerRootView style={{ flex: 1 }}>
 				<GestureDetector
 					gesture={Gesture.Race(
 						tapGesture,
@@ -135,7 +135,9 @@ export default function App() {
 
 						{/* <PirateShip lanePos={3} /> */}
 
-						{showMissile && <Missile lanePos={lanePos} />}
+						{firingMissile.value && (
+							<Missile lanePos={lanePos} isActive={firingMissile} />
+						)}
 
 						<MarineShip lanePos={lanePos} />
 
@@ -148,7 +150,7 @@ export default function App() {
 						<CountdownTimer seconds={timer} />
 					</Canvas>
 				</GestureDetector>
-			</SafeAreaView>
-		</GestureHandlerRootView>
+			</GestureHandlerRootView>
+		</SafeAreaView>
 	);
 }

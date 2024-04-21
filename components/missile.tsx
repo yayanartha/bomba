@@ -16,9 +16,10 @@ import { useEffect } from "react";
 
 interface Props {
 	lanePos: SharedValue<number>;
+	isActive: SharedValue<boolean>;
 }
 
-export const Missile = ({ lanePos }: Props) => {
+export const Missile = ({ lanePos, isActive }: Props) => {
 	const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 	const shipHeight = screenHeight * SHIP_HEIGHT_RATIO;
 	const laneWidth = screenWidth / GRID_NUM;
@@ -37,6 +38,7 @@ export const Missile = ({ lanePos }: Props) => {
 	useEffect(() => {
 		posY.value = withTiming(-missileHeight, { duration: MISSILE_SPEED }, () => {
 			posY.value = defaultPosY;
+			isActive.value = false;
 		});
 
 		return () => {
