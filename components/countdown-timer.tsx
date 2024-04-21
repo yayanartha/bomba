@@ -1,31 +1,54 @@
 import { useWindowDimensions } from "react-native";
 import { Text } from "./text";
-import { useMemo, useState } from "react";
+import {
+	interpolate,
+	useDerivedValue,
+	useSharedValue,
+	withRepeat,
+	withTiming,
+} from "react-native-reanimated";
+import { useEffect } from "react";
+import { Extrapolate, Group } from "@shopify/react-native-skia";
 
 interface Props {
 	seconds: number;
 }
 
-const formatTimer = (time: number) => {
-	if (time < 10) {
-		return `0${time}`;
-	}
-
-	return time;
-};
-
 export const CountdownTimer = ({ seconds }: Props) => {
 	const { width: screenWidth } = useWindowDimensions();
 
-	const time = useMemo(() => {
-		if (!seconds) {
-			return "00:00";
+	const min = Math.floor(seconds / 60);
+	const sec = seconds % 60;
+	const time = `${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}`;
+
+	const scale = useSharedValue(1);
+
+	useEffect(() => {
+		if (min === 0 && sec <= 5) {
+			scale.value = withRepeat(withTiming(1.1, { duration: 500 }), -1, true);
 		}
+	}, [min, sec, scale]);
 
-		return `${formatTimer(Math.floor(seconds / 60))}:${formatTimer(
-			seconds % 60,
-		)}`;
-	}, [seconds]);
+	const transform = useDerivedValue(() => {
+		const translateX = interpolate(
+			scale.value,
+			[1, 1.1],
+			[0, -17],
+			Extrapolate.CLAMP,
+		);
 
-	return <Text text={time} x={screenWidth / 2 - 39} y={24} size={30} />;
+		return [{ scale: scale.value }, { translateX }];
+	});
+
+	return (
+		<Group transform={transform}>
+			<Text
+				text={time}
+				x={screenWidth / 2 - 41}
+				y={0}
+				size={30}
+				width={screenWidth}
+			/>
+		</Group>
+	);
 };

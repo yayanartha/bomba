@@ -11,3 +11,9 @@ Bomba is a casual PvP online mobile game where players can become the Pirate or 
 
 ## The Marine Objective
 1. Destroy the Pirate ship within 3 minutes of gameplay by shooting missiles.
+
+## TODO
+- [x] Board & Lane
+- [x] Countdown Timer
+- [x] ATB system
+- [x] Perform Move & Action

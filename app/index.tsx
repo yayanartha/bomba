@@ -1,8 +1,6 @@
-import { Canvas, Fill, Group } from "@shopify/react-native-skia";
-
+import { Canvas } from "@shopify/react-native-skia";
 import { useWindowDimensions } from "react-native";
 import { colors } from "../constants/colors";
-
 import { Board } from "../components/board";
 import { PirateShip } from "../components/pirate-ship";
 import { MarineShip } from "../components/marine-ship";
@@ -35,6 +33,7 @@ import {
 	GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import { Missile } from "../components/missile";
+import { router } from "expo-router";
 
 export default function App() {
 	const { width: screenWidth, height: screenHeight } = useWindowDimensions();
@@ -52,12 +51,19 @@ export default function App() {
 					return prevState - 1;
 				}
 
+				clearInterval(interval);
 				return prevState;
 			});
 		}, 1000);
 
 		return () => clearInterval(interval);
 	}, []);
+
+	useEffect(() => {
+		if (timer <= 0) {
+			router.navigate("result-modal");
+		}
+	}, [timer]);
 
 	const atbDuration = useMemo(() => {
 		if (timer < DEFAULT_TIMER / 3) {
