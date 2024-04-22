@@ -4,6 +4,8 @@ import {
 	Paragraph,
 	type ParagraphProps,
 	TextAlign,
+	Paint,
+	PaintStyle,
 } from "@shopify/react-native-skia";
 import { colors } from "../constants/colors";
 import { useMemo } from "react";
@@ -12,6 +14,7 @@ interface Props extends Omit<ParagraphProps, "paragraph"> {
 	text: string;
 	size?: number;
 	center?: boolean;
+	enableStroke?: boolean;
 }
 
 export const Text = ({
@@ -21,11 +24,43 @@ export const Text = ({
 	y,
 	size = 24,
 	width,
+	enableStroke = true,
+	color = colors.white,
 	...props
 }: Props) => {
 	const fonts = useFonts({
 		Gilroy: [require("../assets/fonts/Gilroy-ExtraBold.ttf")],
 	});
+
+	const paragraphStroke = useMemo(() => {
+		if (!fonts) {
+			return null;
+		}
+
+		const foregroundPaint = Skia.Paint();
+		foregroundPaint.setStyle(PaintStyle.Stroke);
+		foregroundPaint.setStrokeWidth(3);
+		foregroundPaint.setColor(Skia.Color(colors.oxfordBlue));
+
+		const para = Skia.ParagraphBuilder.Make(
+			{
+				textAlign: center ? TextAlign.Center : TextAlign.Left,
+			},
+			fonts,
+		)
+			.pushStyle(
+				{
+					fontFamilies: ["Gilroy"],
+					fontSize: size,
+					color: Skia.Color(colors.white),
+				},
+				foregroundPaint,
+			)
+			.addText(text)
+			.build();
+
+		return para;
+	}, [center, text, size, fonts]);
 
 	const paragraph = useMemo(() => {
 		if (!fonts) {
@@ -41,29 +76,35 @@ export const Text = ({
 			.pushStyle({
 				fontFamilies: ["Gilroy"],
 				fontSize: size,
-				color: Skia.Color(colors.white),
-				shadows: [
-					{
-						color: Skia.Color(colors.royalBlue),
-						offset: { x: 0, y: 0 },
-						blurRadius: 4,
-					},
-				],
+				color: Skia.Color(color),
 			})
 			.addText(text)
 			.build();
 
 		return para;
-	}, [center, text, size, fonts]);
+	}, [center, text, size, color, fonts]);
 
 	return (
-		<Paragraph
-			x={x}
-			y={y}
-			color={colors.white}
-			width={width}
-			{...props}
-			paragraph={paragraph}
-		/>
+		<>
+			{enableStroke && (
+				<Paragraph
+					x={x}
+					y={y}
+					color={colors.white}
+					width={width}
+					{...props}
+					paragraph={paragraphStroke}
+				/>
+			)}
+
+			<Paragraph
+				x={x}
+				y={y}
+				color={colors.white}
+				width={width}
+				{...props}
+				paragraph={paragraph}
+			/>
+		</>
 	);
 };

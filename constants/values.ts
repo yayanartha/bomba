@@ -1,4 +1,4 @@
-export const GRID_NUM = 6;
+export const GRID_NUM = 5;
 export const SHIP_HEIGHT_RATIO = 0.2;
 export const SHIP_POSITION_Y_RATIO = 0.2;
 

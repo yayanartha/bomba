@@ -34,6 +34,7 @@ import {
 import { Missile } from "../components/missile";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { randomNumberBetween } from "../utils/number";
 
 export default function App() {
 	const { width: screenWidth, height: screenHeight } = useWindowDimensions();
@@ -41,7 +42,7 @@ export default function App() {
 	const [timer, setTimer] = useState(DEFAULT_TIMER);
 
 	const atbGauge = useSharedValue(0);
-	const lanePos = useSharedValue(2);
+	const lanePos = useSharedValue(randomNumberBetween(0, GRID_NUM - 1));
 	const firingMissile = useSharedValue(false);
 
 	useEffect(() => {
@@ -110,13 +111,20 @@ export default function App() {
 		});
 
 	const tapGesture = Gesture.Tap().onStart(() => {
-		if (atbGauge.value >= ATB_ACTION_POINT) {
+		if (atbGauge.value >= ATB_ACTION_POINT && !firingMissile.value) {
 			firingMissile.value = true;
 			cancelAnimation(atbGauge);
 			atbGauge.value = atbGauge.value - ATB_ACTION_POINT;
 			runOnJS(runAtbGauge)();
 		}
 	});
+
+	// const restart = () => {
+	// 	setTimer(DEFAULT_TIMER);
+	// 	atbGauge.value = 0;
+	// 	lanePos.value = randomNumberBetween(0, GRID_NUM - 1);
+	// 	firingMissile.value = false;
+	// }
 
 	return (
 		<SafeAreaView

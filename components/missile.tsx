@@ -11,6 +11,7 @@ import {
 	type SharedValue,
 	withTiming,
 	cancelAnimation,
+	Easing,
 } from "react-native-reanimated";
 import { useEffect } from "react";
 
@@ -36,10 +37,14 @@ export const Missile = ({ lanePos, isActive }: Props) => {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		posY.value = withTiming(-missileHeight, { duration: MISSILE_SPEED }, () => {
-			posY.value = defaultPosY;
-			isActive.value = false;
-		});
+		posY.value = withTiming(
+			-missileHeight,
+			{ duration: MISSILE_SPEED, easing: Easing.out(Easing.ease) },
+			() => {
+				posY.value = defaultPosY;
+				isActive.value = false;
+			},
+		);
 
 		return () => {
 			cancelAnimation(posY);
