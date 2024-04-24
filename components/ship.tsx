@@ -8,8 +8,8 @@ interface Props {
 }
 
 export const Ship = ({ xPos, yPos }: Props) => {
-	const { width: screenWidth, height: screenHeight } = useWindowDimensions();
-	const shipHeight = screenHeight * SHIP_HEIGHT_RATIO;
+	const { width: screenWidth } = useWindowDimensions();
+	const shipHeight = (screenWidth / GRID_NUM) * 1.8;
 
 	const image = useImage(require("../assets/battleship.png"));
 

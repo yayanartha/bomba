@@ -1,6 +1,7 @@
 export const GRID_NUM = 5;
 export const SHIP_HEIGHT_RATIO = 0.2;
 export const SHIP_POSITION_Y_RATIO = 0.2;
+export const SHIP_MOVEMENT_SPEED = 500;
 
 export const ATB_BAR_X = 24;
 export const ATB_BAR_Y = 40;

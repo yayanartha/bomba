@@ -15,6 +15,7 @@ import {
 	FASTEST_ATB_FILL_RATE,
 	GRID_NUM,
 	MISSILE_SPEED,
+	SHIP_MOVEMENT_SPEED,
 } from "../constants/values";
 import { CountdownTimer } from "../components/countdown-timer";
 import { useEffect, useMemo, useState } from "react";
@@ -92,7 +93,9 @@ export default function App() {
 		.direction(Directions.LEFT)
 		.onStart(() => {
 			if (atbGauge.value >= ATB_MOVE_POINT && lanePos.value > 0) {
-				lanePos.value = lanePos.value - 1;
+				lanePos.value = withTiming(lanePos.value - 1, {
+					duration: SHIP_MOVEMENT_SPEED,
+				});
 				cancelAnimation(atbGauge);
 				atbGauge.value = atbGauge.value - ATB_MOVE_POINT;
 				runOnJS(runAtbGauge)();
@@ -103,7 +106,9 @@ export default function App() {
 		.direction(Directions.RIGHT)
 		.onStart(() => {
 			if (atbGauge.value >= ATB_MOVE_POINT && lanePos.value < GRID_NUM - 1) {
-				lanePos.value = lanePos.value + 1;
+				lanePos.value = withTiming(lanePos.value + 1, {
+					duration: SHIP_MOVEMENT_SPEED,
+				});
 				cancelAnimation(atbGauge);
 				atbGauge.value = atbGauge.value - ATB_MOVE_POINT;
 				runOnJS(runAtbGauge)();
@@ -118,13 +123,6 @@ export default function App() {
 			runOnJS(runAtbGauge)();
 		}
 	});
-
-	// const restart = () => {
-	// 	setTimer(DEFAULT_TIMER);
-	// 	atbGauge.value = 0;
-	// 	lanePos.value = randomNumberBetween(0, GRID_NUM - 1);
-	// 	firingMissile.value = false;
-	// }
 
 	return (
 		<SafeAreaView
@@ -141,13 +139,9 @@ export default function App() {
 					<Canvas style={{ flex: 1 }}>
 						<Board />
 
-						{/* <PirateShip lanePos={3} /> */}
-
 						{firingMissile.value && (
 							<Missile lanePos={lanePos} isActive={firingMissile} />
 						)}
-
-						<MarineShip lanePos={lanePos} />
 
 						<ATBBar
 							progress={atbGauge}
@@ -159,6 +153,10 @@ export default function App() {
 					</Canvas>
 				</GestureDetector>
 			</GestureHandlerRootView>
+
+			<PirateShip lanePos={lanePos} />
+
+			<MarineShip lanePos={lanePos} />
 		</SafeAreaView>
 	);
 }

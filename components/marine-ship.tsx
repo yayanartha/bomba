@@ -1,18 +1,14 @@
 import React from "react";
 import { Ship } from "./ship";
 import { useWindowDimensions } from "react-native";
-import {
-	GRID_NUM,
-	SHIP_HEIGHT_RATIO,
-	SHIP_POSITION_Y_RATIO,
-} from "../constants/values";
-import {
+import { GRID_NUM, SHIP_HEIGHT_RATIO } from "../constants/values";
+import Reanimated, {
 	type SharedValue,
-	useAnimatedReaction,
-	useDerivedValue,
-	useSharedValue,
-	withTiming,
+	LinearTransition,
+	useAnimatedStyle,
+	Easing,
 } from "react-native-reanimated";
+import { Canvas } from "@shopify/react-native-skia";
 
 interface Props {
 	lanePos: SharedValue<number>;
@@ -21,15 +17,28 @@ interface Props {
 export const MarineShip = ({ lanePos }: Props) => {
 	const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 	const shipHeight = screenHeight * SHIP_HEIGHT_RATIO;
+	const laneWidth = screenWidth / GRID_NUM;
 
-	const xPos = useDerivedValue(() => {
-		return (screenWidth / GRID_NUM) * lanePos.value;
+	const animatedStyle = useAnimatedStyle(() => {
+		return {
+			left: laneWidth * lanePos.value,
+		};
 	});
 
 	return (
-		<Ship
-			xPos={xPos.value}
-			yPos={screenHeight - screenHeight * SHIP_POSITION_Y_RATIO - shipHeight}
-		/>
+		<Reanimated.View
+			layout={LinearTransition.easing(Easing.linear)}
+			style={[
+				animatedStyle,
+				{
+					position: "absolute",
+					bottom: 50,
+				},
+			]}
+		>
+			<Canvas style={{ width: laneWidth, height: shipHeight }}>
+				<Ship xPos={0} yPos={0} />
+			</Canvas>
+		</Reanimated.View>
 	);
 };
