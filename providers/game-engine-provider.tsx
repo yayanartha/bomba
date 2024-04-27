@@ -22,16 +22,23 @@ import {
 	GRID_NUM,
 	MINE_COOLDOWN,
 	MISSILE_COOLDOWN,
+	SHIP_HEIGHT_RATIO,
 	SHIP_MOVEMENT_SPEED,
 } from "../constants/values";
 import { randomNumberBetween } from "../utils/number";
 import { router } from "expo-router";
 import { Role } from "../constants/types";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface GameEngineContext {
 	screenWidth: number;
 	screenHeight: number;
 	role?: Role;
+	shipHeight: number;
+	piratePosY: number;
+	marinePosY: number;
+	pirateCollisionY: number;
+	marineCollisionY: number;
 	missiles: number[];
 	setMissiles: React.Dispatch<React.SetStateAction<number[]>>;
 	mines: number[];
@@ -45,7 +52,7 @@ interface GameEngineContext {
 	fireMissile(): void;
 	dropMine(): void;
 	onMove(direction: "left" | "right"): void;
-	onColideWithMissile(): void;
+	onCollideWithMissile(): void;
 	onCollideWithMine(): void;
 	restartGame(): void;
 	quitGame(): void;
@@ -56,6 +63,7 @@ export const GameEngineContext = createContext({} as GameEngineContext);
 
 export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 	const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+	const insets = useSafeAreaInsets();
 
 	const [role, setRole] = useState<Role>();
 	const [showStartCountdown, setShowStartCountdown] = useState(true);
@@ -66,6 +74,11 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 	const atbGauge = useSharedValue(0);
 	const laneIndex = useSharedValue(randomNumberBetween(0, GRID_NUM - 1));
 	const laneWidth = screenWidth / GRID_NUM;
+	const shipHeight = screenHeight * SHIP_HEIGHT_RATIO;
+	const piratePosY = 160 + insets.top;
+	const marinePosY = screenHeight - insets.bottom - 24 - shipHeight;
+	const pirateCollisionY = piratePosY + shipHeight - shipHeight * 0.2;
+	const marineCollisionY = marinePosY + shipHeight * 0.2;
 
 	const timerTimeout = useRef<NodeJS.Timeout>();
 
@@ -76,8 +89,8 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 		});
 	};
 
-	const startGame = (role: Role) => {
-		setRole(role);
+	const startGame = (_role = role) => {
+		setRole(_role);
 
 		timerTimeout.current = setTimeout(() => {
 			setShowStartCountdown(false);
@@ -86,7 +99,7 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	useEffect(() => {
-		startGame(Role.Pirate);
+		startGame(Role.Marine);
 
 		return () => {
 			if (timerTimeout.current) clearTimeout(timerTimeout.current);
@@ -125,7 +138,7 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 		reduceAtb("move");
 	};
 
-	const onColideWithMissile = () => {
+	const onCollideWithMissile = () => {
 		// Reduce The Pirate's HP by 1
 		// if HP == 0, game over -> The Marine wins
 	};
@@ -136,8 +149,15 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 
 	const restartGame = () => {
 		// Reset the variables
-		// Start the game
+		setMissiles([]);
+		setMines([]);
+		atbGauge.value = 0;
+		laneIndex.value = randomNumberBetween(0, GRID_NUM - 1);
+
+		// Go back and start the game
 		router.back();
+		setShowStartCountdown(true);
+		startGame();
 	};
 
 	const quitGame = () => {
@@ -155,6 +175,11 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 			screenWidth,
 			screenHeight,
 			role,
+			shipHeight,
+			piratePosY,
+			marinePosY,
+			pirateCollisionY,
+			marineCollisionY,
 			atbGauge,
 			laneIndex,
 			laneWidth,
@@ -168,7 +193,7 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 			fireMissile,
 			dropMine,
 			onMove,
-			onColideWithMissile,
+			onCollideWithMissile,
 			onCollideWithMine,
 			restartGame,
 			quitGame,
@@ -178,6 +203,11 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 			screenWidth,
 			screenHeight,
 			role,
+			shipHeight,
+			piratePosY,
+			marinePosY,
+			pirateCollisionY,
+			marineCollisionY,
 			atbGauge,
 			laneIndex,
 			laneWidth,
@@ -189,7 +219,7 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 			fireMissile,
 			dropMine,
 			onMove,
-			onColideWithMissile,
+			onCollideWithMissile,
 			onCollideWithMine,
 			restartGame,
 			quitGame,

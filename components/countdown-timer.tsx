@@ -15,7 +15,6 @@ export const CountdownTimer = () => {
 	const { screenWidth, onTimeOut } = useGameEngine();
 	const [timer, setTimer] = useState(DEFAULT_TIMER);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const interval = setInterval(() => {
 			setTimer((prevState) => {
@@ -23,7 +22,6 @@ export const CountdownTimer = () => {
 					return prevState - 1;
 				}
 
-				onTimeOut();
 				clearInterval(interval);
 				return prevState;
 			});
@@ -40,9 +38,14 @@ export const CountdownTimer = () => {
 
 	const scale = useSharedValue(1);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		if (min === 0 && sec <= 5) {
 			scale.value = withRepeat(withTiming(1.1, { duration: 500 }), -1, true);
+		}
+
+		if (min === 0 && sec === 0) {
+			onTimeOut();
 		}
 	}, [min, sec, scale]);
 

@@ -1,6 +1,5 @@
 import { Image, useImage } from "@shopify/react-native-skia";
-import { useWindowDimensions } from "react-native";
-import { GRID_NUM, SHIP_HEIGHT_RATIO } from "../constants/values";
+import { useGameEngine } from "../hooks/use-game-engine";
 
 interface Props {
 	xPos: number;
@@ -8,8 +7,7 @@ interface Props {
 }
 
 export const Ship = ({ xPos, yPos }: Props) => {
-	const { width: screenWidth } = useWindowDimensions();
-	const shipHeight = (screenWidth / GRID_NUM) * 1.8;
+	const { laneWidth, shipHeight } = useGameEngine();
 
 	const image = useImage(require("../assets/battleship.png"));
 
@@ -19,8 +17,9 @@ export const Ship = ({ xPos, yPos }: Props) => {
 			fit="cover"
 			x={xPos}
 			y={yPos}
-			width={screenWidth / GRID_NUM}
+			width={laneWidth}
 			height={shipHeight}
+			opacity={0.5}
 		/>
 	);
 };

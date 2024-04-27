@@ -22,18 +22,22 @@ import { useGameEngine } from "../../hooks/use-game-engine";
 import { Role } from "../../constants/types";
 import { runOnJS } from "react-native-reanimated";
 import { useContextBridge } from "its-fine";
+import { View } from "react-native";
+import { Mine } from "../../components/mine";
 
 export default function Index() {
 	const ContextBridge = useContextBridge();
 	const {
+		piratePosY,
+		screenWidth,
 		role,
 		atbGauge,
 		laneIndex,
 		onMove,
 		missiles,
-		setMissiles,
 		mines,
-		setMines,
+		pirateCollisionY,
+		marineCollisionY,
 		actionCooldown,
 		fireMissile,
 		dropMine,
@@ -58,9 +62,9 @@ export default function Index() {
 	const tapGesture = Gesture.Tap().onStart(() => {
 		if (atbGauge.value >= ATB_ACTION_POINT && !actionCooldown.value) {
 			if (role === Role.Pirate) {
-				runOnJS(fireMissile)();
-			} else {
 				runOnJS(dropMine)();
+			} else {
+				runOnJS(fireMissile)();
 			}
 		}
 	});
@@ -81,8 +85,12 @@ export default function Index() {
 						<ContextBridge>
 							<Board />
 
-							{missiles.map((missile, index) => (
-								<Missile key={`${missile}-${index}`} laneIndex={missile} />
+							{missiles.map((laneIndex, idx) => (
+								<Missile key={`${laneIndex}-${idx}`} laneIndex={laneIndex} />
+							))}
+
+							{mines.map((laneIndex, index) => (
+								<Mine key={`${laneIndex}-${index}`} laneIndex={laneIndex} />
 							))}
 
 							<ATBBar
@@ -96,6 +104,30 @@ export default function Index() {
 					</Canvas>
 				</GestureDetector>
 			</GestureHandlerRootView>
+
+			<View
+				style={{
+					width: screenWidth,
+					height: 1,
+					borderWidth: 1,
+					borderStyle: "dashed",
+					borderColor: "red",
+					position: "absolute",
+					top: pirateCollisionY,
+				}}
+			/>
+
+			<View
+				style={{
+					width: screenWidth,
+					height: 1,
+					position: "absolute",
+					top: marineCollisionY,
+					borderWidth: 1,
+					borderStyle: "dashed",
+					borderColor: "red",
+				}}
+			/>
 
 			<PirateShip />
 

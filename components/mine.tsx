@@ -1,5 +1,5 @@
 import { Rect } from "@shopify/react-native-skia";
-import { MISSILE_SPEED } from "../constants/values";
+import { MINE_SPEED } from "../constants/values";
 import {
 	useSharedValue,
 	withTiming,
@@ -15,22 +15,21 @@ interface Props {
 	laneIndex: number;
 }
 
-export const Missile = ({ laneIndex }: Props) => {
-	const { screenHeight, laneWidth, marineCollisionY, role } = useGameEngine();
+export const Mine = ({ laneIndex }: Props) => {
+	const { laneWidth, pirateCollisionY, screenHeight, role } = useGameEngine();
 	const [isActive, setIsActive] = useState(true);
 
-	const missileWidth = laneWidth * 0.3;
-	const missileHeight = missileWidth * 1.7;
-	const posX = laneIndex * laneWidth + laneWidth / 2 - missileWidth / 2;
+	const mineSize = laneWidth * 0.3;
+	const posX = laneIndex * laneWidth + laneWidth / 2 - mineSize / 2;
 	const posY = useSharedValue(
-		role === Role.Marine ? marineCollisionY - missileHeight : screenHeight,
+		role === Role.Pirate ? pirateCollisionY - mineSize : -mineSize,
 	);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		posY.value = withTiming(
-			-missileHeight,
-			{ duration: MISSILE_SPEED, easing: Easing.out(Easing.ease) },
+			screenHeight,
+			{ duration: MINE_SPEED, easing: Easing.in(Easing.ease) },
 			() => {
 				runOnJS(setIsActive)(false);
 			},
@@ -39,19 +38,13 @@ export const Missile = ({ laneIndex }: Props) => {
 		return () => {
 			cancelAnimation(posY);
 		};
-	}, [missileHeight]);
+	}, [mineSize]);
 
 	if (!isActive) {
 		return null;
 	}
 
 	return (
-		<Rect
-			x={posX}
-			y={posY}
-			width={missileWidth}
-			height={missileHeight}
-			color="red"
-		/>
+		<Rect x={posX} y={posY} height={mineSize} width={mineSize} color="red" />
 	);
 };

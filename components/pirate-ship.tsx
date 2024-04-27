@@ -1,6 +1,5 @@
 import React from "react";
 import { Ship } from "./ship";
-import { GRID_NUM, SHIP_HEIGHT_RATIO } from "../constants/values";
 import Reanimated, {
 	useAnimatedStyle,
 	LinearTransition,
@@ -10,10 +9,7 @@ import { Canvas } from "@shopify/react-native-skia";
 import { useGameEngine } from "../hooks/use-game-engine";
 
 export const PirateShip = () => {
-	const { screenWidth, screenHeight, laneIndex } = useGameEngine();
-
-	const shipHeight = screenHeight * SHIP_HEIGHT_RATIO;
-	const laneWidth = screenWidth / GRID_NUM;
+	const { laneWidth, laneIndex, shipHeight, piratePosY } = useGameEngine();
 
 	const animatedStyle = useAnimatedStyle(() => {
 		return {
@@ -28,7 +24,7 @@ export const PirateShip = () => {
 				animatedStyle,
 				{
 					position: "absolute",
-					top: 240,
+					top: piratePosY,
 				},
 			]}
 		>

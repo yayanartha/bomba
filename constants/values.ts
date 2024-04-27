@@ -19,5 +19,5 @@ export const DEFAULT_TIMER = 180; // in seconds
 export const MISSILE_SPEED = 2000; // in miliseconds
 export const MISSILE_COOLDOWN = 1500; // in miliseconds
 
-export const MINE_SPEED = 1500; // in miliseconds
+export const MINE_SPEED = 3000; // in miliseconds
 export const MINE_COOLDOWN = 1500; // in miliseconds
