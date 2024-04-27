@@ -1,24 +1,20 @@
-import { Canvas, Group, RoundedRect, Shadow } from "@shopify/react-native-skia";
-import { Pressable, View, useWindowDimensions, StyleSheet } from "react-native";
-import { Text } from "../components/text";
-import { colors } from "../constants/colors";
-import { router } from "expo-router";
-import { Button } from "../components/button";
+import { Canvas, RoundedRect } from "@shopify/react-native-skia";
+import { View, StyleSheet } from "react-native";
+import { Text } from "../../components/text";
+import { colors } from "../../constants/colors";
+import { Button } from "../../components/button";
 import Reanimated, {
 	FadeIn,
 	FadeInDown,
 	ZoomIn,
 } from "react-native-reanimated";
+import { useGameEngine } from "../../hooks/use-game-engine";
 
 export default function ResultModal() {
-	const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+	const { screenWidth, restartGame, quitGame } = useGameEngine();
 
 	const modalSize = screenWidth - 48;
 	const modalMaxWidth = 480;
-
-	const restartGame = () => {
-		router.replace("/");
-	};
 
 	return (
 		<View
@@ -49,7 +45,7 @@ export default function ResultModal() {
 					<Text
 						x={0}
 						y={0}
-						text="Time's Up"
+						text="You Win!"
 						size={32}
 						width={modalSize}
 						center
@@ -78,7 +74,7 @@ export default function ResultModal() {
 
 			<Reanimated.View entering={FadeInDown.delay(600).springify()}>
 				<Button
-					onPresss={restartGame}
+					onPresss={quitGame}
 					width={modalSize}
 					text="Exit"
 					backgroundColor={colors.red}

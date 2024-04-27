@@ -1,27 +1,23 @@
 import React from "react";
 import { Ship } from "./ship";
-import { useWindowDimensions } from "react-native";
 import { GRID_NUM, SHIP_HEIGHT_RATIO } from "../constants/values";
 import Reanimated, {
-	type SharedValue,
 	useAnimatedStyle,
 	LinearTransition,
 	Easing,
 } from "react-native-reanimated";
 import { Canvas } from "@shopify/react-native-skia";
+import { useGameEngine } from "../hooks/use-game-engine";
 
-interface Props {
-	lanePos: SharedValue<number>;
-}
+export const PirateShip = () => {
+	const { screenWidth, screenHeight, laneIndex } = useGameEngine();
 
-export const PirateShip = ({ lanePos }: Props) => {
-	const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 	const shipHeight = screenHeight * SHIP_HEIGHT_RATIO;
 	const laneWidth = screenWidth / GRID_NUM;
 
 	const animatedStyle = useAnimatedStyle(() => {
 		return {
-			left: laneWidth * lanePos.value,
+			left: laneWidth * laneIndex.value,
 		};
 	});
 

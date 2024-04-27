@@ -1,4 +1,3 @@
-import { useWindowDimensions } from "react-native";
 import { Text } from "./text";
 import {
 	interpolate,
@@ -7,18 +6,36 @@ import {
 	withRepeat,
 	withTiming,
 } from "react-native-reanimated";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Extrapolate, Group } from "@shopify/react-native-skia";
+import { useGameEngine } from "../hooks/use-game-engine";
+import { DEFAULT_TIMER } from "../constants/values";
 
-interface Props {
-	seconds: number;
-}
+export const CountdownTimer = () => {
+	const { screenWidth, onTimeOut } = useGameEngine();
+	const [timer, setTimer] = useState(DEFAULT_TIMER);
 
-export const CountdownTimer = ({ seconds }: Props) => {
-	const { width: screenWidth } = useWindowDimensions();
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setTimer((prevState) => {
+				if (prevState > 0) {
+					return prevState - 1;
+				}
 
-	const min = Math.floor(seconds / 60);
-	const sec = seconds % 60;
+				onTimeOut();
+				clearInterval(interval);
+				return prevState;
+			});
+		}, 1000);
+
+		return () => {
+			clearInterval(interval);
+		};
+	}, []);
+
+	const min = Math.floor(timer / 60);
+	const sec = timer % 60;
 	const time = `${min < 10 ? `0${min}` : min}:${sec < 10 ? `0${sec}` : sec}`;
 
 	const scale = useSharedValue(1);

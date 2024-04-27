@@ -1,35 +1,32 @@
 import { Rect } from "@shopify/react-native-skia";
-import { useWindowDimensions } from "react-native";
 import {
-	GRID_NUM,
 	MISSILE_SPEED,
 	SHIP_HEIGHT_RATIO,
 	SHIP_POSITION_Y_RATIO,
 } from "../constants/values";
 import {
 	useSharedValue,
-	type SharedValue,
 	withTiming,
 	cancelAnimation,
 	Easing,
+	runOnJS,
 } from "react-native-reanimated";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useGameEngine } from "../hooks/use-game-engine";
 
 interface Props {
-	lanePos: SharedValue<number>;
-	isActive: SharedValue<boolean>;
+	laneIndex: number;
 }
 
-export const Missile = ({ lanePos, isActive }: Props) => {
-	const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+export const Missile = ({ laneIndex }: Props) => {
+	const { screenHeight, laneWidth } = useGameEngine();
 	const shipHeight = screenHeight * SHIP_HEIGHT_RATIO;
-	const laneWidth = screenWidth / GRID_NUM;
-	const lane = laneWidth * lanePos.value;
+	const [isActive, setIsActive] = useState(true);
 
 	const missileWidth = laneWidth * 0.3;
 	const missileHeight = missileWidth * 1.7;
 
-	const posX = lane + laneWidth / 2 - missileWidth / 2;
+	const posX = laneIndex * laneWidth + laneWidth / 2 - missileWidth / 2;
 
 	const defaultPosY =
 		screenHeight - screenHeight * SHIP_POSITION_Y_RATIO - shipHeight;
@@ -41,15 +38,18 @@ export const Missile = ({ lanePos, isActive }: Props) => {
 			-missileHeight,
 			{ duration: MISSILE_SPEED, easing: Easing.out(Easing.ease) },
 			() => {
-				posY.value = defaultPosY;
-				isActive.value = false;
+				runOnJS(setIsActive)(false);
 			},
 		);
 
 		return () => {
 			cancelAnimation(posY);
 		};
-	}, []);
+	}, [missileHeight]);
+
+	if (!isActive) {
+		return null;
+	}
 
 	return (
 		<Rect

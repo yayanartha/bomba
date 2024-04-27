@@ -4,11 +4,11 @@ import {
 	Paragraph,
 	type ParagraphProps,
 	TextAlign,
-	Paint,
 	PaintStyle,
 } from "@shopify/react-native-skia";
 import { colors } from "../constants/colors";
 import { useMemo } from "react";
+import { Dimensions } from "react-native";
 
 interface Props extends Omit<ParagraphProps, "paragraph"> {
 	text: string;
@@ -23,7 +23,7 @@ export const Text = ({
 	x,
 	y,
 	size = 24,
-	width,
+	width = Dimensions.get("window").width,
 	enableStroke = true,
 	color = colors.white,
 	...props
