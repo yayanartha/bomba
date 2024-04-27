@@ -24,11 +24,12 @@ import { runOnJS } from "react-native-reanimated";
 import { useContextBridge } from "its-fine";
 import { View } from "react-native";
 import { Mine } from "../../components/mine";
+import { StartCountdown } from "../../components/start-countdown";
 
 export default function Index() {
 	const ContextBridge = useContextBridge();
 	const {
-		piratePosY,
+		showStartCountdown,
 		screenWidth,
 		role,
 		atbGauge,
@@ -99,7 +100,7 @@ export default function Index() {
 								actionPoint={ATB_ACTION_POINT}
 							/>
 
-							<CountdownTimer />
+							{!showStartCountdown && <CountdownTimer />}
 						</ContextBridge>
 					</Canvas>
 				</GestureDetector>
@@ -132,6 +133,8 @@ export default function Index() {
 			<PirateShip />
 
 			<MarineShip />
+
+			{showStartCountdown && <StartCountdown />}
 		</SafeAreaView>
 	);
 }

@@ -14,7 +14,7 @@ export const DEFAULT_ATB_FILL_RATE = 1000; // in miliseconds
 export const FASTER_ATB_FILL_RATE = 10000; // in miliseconds
 export const FASTEST_ATB_FILL_RATE = 5000; // in miliseconds
 
-export const DEFAULT_TIMER = 180; // in seconds
+export const DEFAULT_TIMER = 5; // in seconds
 
 export const MISSILE_SPEED = 2000; // in miliseconds
 export const MISSILE_COOLDOWN = 1500; // in miliseconds

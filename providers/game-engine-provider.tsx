@@ -95,16 +95,17 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 		timerTimeout.current = setTimeout(() => {
 			setShowStartCountdown(false);
 			runAtbGauge();
-		}, 3000);
+		}, 4000);
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		startGame(Role.Marine);
 
 		return () => {
 			if (timerTimeout.current) clearTimeout(timerTimeout.current);
 		};
-	}, [startGame]);
+	}, []);
 
 	const reduceAtb = (type: "move" | "action") => {
 		cancelAnimation(atbGauge);
@@ -153,10 +154,10 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 		setMines([]);
 		atbGauge.value = 0;
 		laneIndex.value = randomNumberBetween(0, GRID_NUM - 1);
+		setShowStartCountdown(true);
 
 		// Go back and start the game
 		router.back();
-		setShowStartCountdown(true);
 		startGame();
 	};
 
