@@ -5,7 +5,6 @@ import Reanimated, {
 	useAnimatedStyle,
 	Easing,
 } from "react-native-reanimated";
-import { Canvas } from "@shopify/react-native-skia";
 import { useGameEngine } from "../hooks/use-game-engine";
 
 export const MarineShip = () => {
@@ -28,9 +27,7 @@ export const MarineShip = () => {
 				},
 			]}
 		>
-			<Canvas style={{ width: laneWidth, height: shipHeight }}>
-				<Ship xPos={0} yPos={0} />
-			</Canvas>
+			<Ship />
 		</Reanimated.View>
 	);
 };

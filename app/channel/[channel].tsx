@@ -14,7 +14,6 @@ import {
 	Directions,
 	Gesture,
 	GestureDetector,
-	GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import { Missile } from "../../components/missile";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,9 +24,11 @@ import { useContextBridge } from "its-fine";
 import { View } from "react-native";
 import { Mine } from "../../components/mine";
 import { StartCountdown } from "../../components/start-countdown";
+import { useLocalSearchParams } from "expo-router";
 
-export default function Index() {
+export default function Channel() {
 	const ContextBridge = useContextBridge();
+	const { channel, name } = useLocalSearchParams();
 	const {
 		showStartCountdown,
 		screenWidth,
@@ -75,36 +76,34 @@ export default function Index() {
 			edges={["top"]}
 			style={{ flex: 1, backgroundColor: colors.aero }}
 		>
-			<GestureHandlerRootView style={{ flex: 1 }}>
-				<GestureDetector
-					gesture={Gesture.Race(
-						tapGesture,
-						Gesture.Race(flingLeftGesture, flingRightGesture),
-					)}
-				>
-					<Canvas style={{ flex: 1 }}>
-						<ContextBridge>
-							<Board />
+			<GestureDetector
+				gesture={Gesture.Race(
+					tapGesture,
+					Gesture.Race(flingLeftGesture, flingRightGesture),
+				)}
+			>
+				<Canvas style={{ flex: 1 }}>
+					<ContextBridge>
+						<Board />
 
-							{missiles.map((laneIndex, idx) => (
-								<Missile key={`${laneIndex}-${idx}`} laneIndex={laneIndex} />
-							))}
+						{missiles.map((laneIndex, idx) => (
+							<Missile key={`${laneIndex}-${idx}`} laneIndex={laneIndex} />
+						))}
 
-							{mines.map((laneIndex, index) => (
-								<Mine key={`${laneIndex}-${index}`} laneIndex={laneIndex} />
-							))}
+						{mines.map((laneIndex, index) => (
+							<Mine key={`${laneIndex}-${index}`} laneIndex={laneIndex} />
+						))}
 
-							<ATBBar
-								progress={atbGauge}
-								movePoint={ATB_MOVE_POINT}
-								actionPoint={ATB_ACTION_POINT}
-							/>
+						<ATBBar
+							progress={atbGauge}
+							movePoint={ATB_MOVE_POINT}
+							actionPoint={ATB_ACTION_POINT}
+						/>
 
-							{!showStartCountdown && <CountdownTimer />}
-						</ContextBridge>
-					</Canvas>
-				</GestureDetector>
-			</GestureHandlerRootView>
+						{!showStartCountdown && <CountdownTimer />}
+					</ContextBridge>
+				</Canvas>
+			</GestureDetector>
 
 			<View
 				style={{

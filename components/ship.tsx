@@ -1,25 +1,10 @@
-import { Image, useImage } from "@shopify/react-native-skia";
 import { useGameEngine } from "../hooks/use-game-engine";
+import { useGameChannel } from "../hooks/use-game-channel";
+import { RandomAvatar } from "./random-avatar";
 
-interface Props {
-	xPos: number;
-	yPos: number;
-}
+export const Ship = () => {
+	const { laneWidth } = useGameEngine();
+	const { name } = useGameChannel();
 
-export const Ship = ({ xPos, yPos }: Props) => {
-	const { laneWidth, shipHeight } = useGameEngine();
-
-	const image = useImage(require("../assets/battleship.png"));
-
-	return (
-		<Image
-			image={image}
-			fit="cover"
-			x={xPos}
-			y={yPos}
-			width={laneWidth}
-			height={shipHeight}
-			opacity={0.5}
-		/>
-	);
+	return <RandomAvatar name={name} size={laneWidth} />;
 };

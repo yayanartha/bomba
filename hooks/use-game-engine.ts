@@ -5,7 +5,9 @@ export const useGameEngine = () => {
 	const context = useContext(GameEngineContext);
 
 	if (!context) {
-		throw Error("Component must be rendered as a child of GameEngineProvider");
+		throw new Error(
+			"Component must be rendered as a child of GameEngineProvider",
+		);
 	}
 
 	return context;

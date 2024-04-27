@@ -74,7 +74,7 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 	const atbGauge = useSharedValue(0);
 	const laneIndex = useSharedValue(randomNumberBetween(0, GRID_NUM - 1));
 	const laneWidth = screenWidth / GRID_NUM;
-	const shipHeight = screenHeight * SHIP_HEIGHT_RATIO;
+	const shipHeight = laneWidth;
 	const piratePosY = 160 + insets.top;
 	const marinePosY = screenHeight - insets.bottom - 24 - shipHeight;
 	const pirateCollisionY = piratePosY + shipHeight - shipHeight * 0.2;
@@ -168,7 +168,7 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 
 	const onTimeOut = () => {
 		// The pirate wins
-		router.navigate("result-modal");
+		router.navigate("channel/result-modal");
 	};
 
 	const contextValue = useMemo(

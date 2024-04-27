@@ -39,7 +39,7 @@ export const Text = ({
 
 		const foregroundPaint = Skia.Paint();
 		foregroundPaint.setStyle(PaintStyle.Stroke);
-		foregroundPaint.setStrokeWidth(3);
+		foregroundPaint.setStrokeWidth(4);
 		foregroundPaint.setColor(Skia.Color(colors.oxfordBlue));
 
 		const para = Skia.ParagraphBuilder.Make(
