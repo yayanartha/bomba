@@ -1,4 +1,14 @@
 export enum Role {
-	Pirate = 0,
-	Marine = 1,
+	Pirate = "pirate",
+	Marine = "marine",
 }
+
+export type PresenceObj = {
+	username: string;
+	presence_ref: string;
+};
+
+export type Player = {
+	username: string;
+	role?: Role;
+};

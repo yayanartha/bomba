@@ -22,6 +22,11 @@ Bomba is a casual PvP online mobile game where players can become the Pirate or 
 - [x] Mines placement
 - [x] Start game count down timer
 - [x] Enter name, channel, generate avatar
-- [ ] Collision detection
-- [ ] Connect with Supabase
-- [ ] Websocket
+- [x] Connect with Supabase
+- [ ] WebSocket listener
+- [ ] Role selection
+- [ ] Start game animation
+- [ ] Missile collision detection
+- [ ] Mine collision detection
+- [ ] End game summary
+- [ ] Replay

@@ -4,7 +4,7 @@ import { RandomAvatar } from "./random-avatar";
 
 export const Ship = () => {
 	const { laneWidth } = useGameEngine();
-	const { name } = useGameChannel();
+	const { username } = useGameChannel();
 
-	return <RandomAvatar name={name} size={laneWidth} />;
+	return <RandomAvatar name={username} size={laneWidth} />;
 };

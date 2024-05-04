@@ -17,10 +17,13 @@ import { useGameChannel } from "../hooks/use-game-channel";
 
 export default function Index() {
 	const { width: screenWidth } = useWindowDimensions();
-	const { name, setName, channel, setChannel } = useGameChannel();
+	const { username, setUsername, channelName, setChannelName, joinChannel } =
+		useGameChannel();
 
 	const startGame = () => {
-		router.navigate(`/channel/${channel}?name=${name}`);
+		joinChannel(() =>
+			router.navigate(`/channel/${channelName}?username=${username}`),
+		);
 	};
 
 	return (
@@ -42,20 +45,21 @@ export default function Index() {
 						x={0}
 						y={0}
 						size={60}
-						text="Bomba!"
+						text="BOMBA!"
 						width={screenWidth - 48}
 						center
 					/>
 				</Canvas>
 			</Reanimated.View>
 
-			{name.length > 0 && (
+			{username.length > 0 && (
 				<Reanimated.View
+					layout={LinearTransition}
 					entering={BounceIn.springify()}
 					exiting={FadeOut.duration(200)}
 					style={{ alignSelf: "center" }}
 				>
-					<RandomAvatar name={name} size={80} />
+					<RandomAvatar name={username} size={80} />
 				</Reanimated.View>
 			)}
 
@@ -64,12 +68,16 @@ export default function Index() {
 				entering={FadeInDown.duration(400).delay(200)}
 				layout={LinearTransition}
 			>
-				<TextInput placeholder="Username" value={name} onChangeText={setName} />
+				<TextInput
+					placeholder="Username"
+					value={username}
+					onChangeText={setUsername}
+				/>
 
 				<TextInput
 					placeholder="Channel"
-					value={channel}
-					onChangeText={setChannel}
+					value={channelName}
+					onChangeText={setChannelName}
 					keyboardType="number-pad"
 				/>
 			</Reanimated.View>

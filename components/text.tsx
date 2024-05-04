@@ -5,6 +5,7 @@ import {
 	type ParagraphProps,
 	TextAlign,
 	PaintStyle,
+	StrokeJoin,
 } from "@shopify/react-native-skia";
 import { colors } from "../constants/colors";
 import { useMemo } from "react";
@@ -40,6 +41,7 @@ export const Text = ({
 		const foregroundPaint = Skia.Paint();
 		foregroundPaint.setStyle(PaintStyle.Stroke);
 		foregroundPaint.setStrokeWidth(4);
+		foregroundPaint.setStrokeJoin(StrokeJoin.Round);
 		foregroundPaint.setColor(Skia.Color(colors.oxfordBlue));
 
 		const para = Skia.ParagraphBuilder.Make(

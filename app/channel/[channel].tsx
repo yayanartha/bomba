@@ -21,14 +21,16 @@ import { useGameEngine } from "../../hooks/use-game-engine";
 import { Role } from "../../constants/types";
 import { runOnJS } from "react-native-reanimated";
 import { useContextBridge } from "its-fine";
-import { View } from "react-native";
+import Reanimated, { FadeIn } from "react-native-reanimated";
 import { Mine } from "../../components/mine";
 import { StartCountdown } from "../../components/start-countdown";
 import { useLocalSearchParams } from "expo-router";
+import { RoleSelection } from "../../components/role-selection";
+import { View } from "react-native";
 
 export default function Channel() {
 	const ContextBridge = useContextBridge();
-	const { channel, name } = useLocalSearchParams();
+	const { channel, username } = useLocalSearchParams();
 	const {
 		showStartCountdown,
 		screenWidth,
@@ -43,6 +45,7 @@ export default function Channel() {
 		actionCooldown,
 		fireMissile,
 		dropMine,
+		startGame,
 	} = useGameEngine();
 
 	const flingLeftGesture = Gesture.Fling()
@@ -76,36 +79,40 @@ export default function Channel() {
 			edges={["top"]}
 			style={{ flex: 1, backgroundColor: colors.aero }}
 		>
-			<GestureDetector
-				gesture={Gesture.Race(
-					tapGesture,
-					Gesture.Race(flingLeftGesture, flingRightGesture),
-				)}
-			>
-				<Canvas style={{ flex: 1 }}>
-					<ContextBridge>
-						<Board />
+			{!!role && (
+				<GestureDetector
+					gesture={Gesture.Race(
+						tapGesture,
+						Gesture.Race(flingLeftGesture, flingRightGesture),
+					)}
+				>
+					<Reanimated.View entering={FadeIn.duration(400)} style={{ flex: 1 }}>
+						<Canvas style={{ flex: 1 }}>
+							<ContextBridge>
+								<Board />
 
-						{missiles.map((laneIndex, idx) => (
-							<Missile key={`${laneIndex}-${idx}`} laneIndex={laneIndex} />
-						))}
+								{missiles.map((laneIndex, idx) => (
+									<Missile key={`${laneIndex}-${idx}`} laneIndex={laneIndex} />
+								))}
 
-						{mines.map((laneIndex, index) => (
-							<Mine key={`${laneIndex}-${index}`} laneIndex={laneIndex} />
-						))}
+								{mines.map((laneIndex, index) => (
+									<Mine key={`${laneIndex}-${index}`} laneIndex={laneIndex} />
+								))}
 
-						<ATBBar
-							progress={atbGauge}
-							movePoint={ATB_MOVE_POINT}
-							actionPoint={ATB_ACTION_POINT}
-						/>
+								<ATBBar
+									progress={atbGauge}
+									movePoint={ATB_MOVE_POINT}
+									actionPoint={ATB_ACTION_POINT}
+								/>
 
-						{!showStartCountdown && <CountdownTimer />}
-					</ContextBridge>
-				</Canvas>
-			</GestureDetector>
+								{!showStartCountdown && <CountdownTimer />}
+							</ContextBridge>
+						</Canvas>
+					</Reanimated.View>
+				</GestureDetector>
+			)}
 
-			<View
+			{/* <View
 				style={{
 					width: screenWidth,
 					height: 1,
@@ -115,9 +122,9 @@ export default function Channel() {
 					position: "absolute",
 					top: pirateCollisionY,
 				}}
-			/>
+			/> */}
 
-			<View
+			{/* <View
 				style={{
 					width: screenWidth,
 					height: 1,
@@ -127,13 +134,15 @@ export default function Channel() {
 					borderStyle: "dashed",
 					borderColor: "red",
 				}}
-			/>
+			/> */}
 
-			<PirateShip />
+			{!!role && <PirateShip />}
 
-			<MarineShip />
+			{!!role && <MarineShip />}
 
-			{showStartCountdown && <StartCountdown />}
+			{!!role && showStartCountdown && <StartCountdown />}
+
+			{!role && <RoleSelection />}
 		</SafeAreaView>
 	);
 }

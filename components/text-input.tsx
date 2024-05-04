@@ -1,25 +1,56 @@
-import { TextInput as RNTextInput, type TextInputProps } from "react-native";
+import {
+	TextInput as RNTextInput,
+	View,
+	type TextInputProps,
+	StyleSheet,
+} from "react-native";
 import { colors } from "../constants/colors";
+import { useState } from "react";
 
-export const TextInput = (props: TextInputProps) => {
+export const TextInput = ({ placeholder, ...props }: TextInputProps) => {
+	const [isActive, setIsActive] = useState(false);
+
 	return (
-		<RNTextInput
-			{...props}
+		<View
 			style={{
-				height: 50,
-				backgroundColor: colors.white,
 				borderWidth: 1.5,
 				borderColor: colors.oxfordBlue,
 				borderRadius: 16,
-				minWidth: 250,
 				paddingHorizontal: 16,
-				textAlign: "center",
-				fontSize: 20,
-				fontFamily: "Gilroy-Extrabold",
-				color: colors.oxfordBlue,
+				backgroundColor: colors.white,
 			}}
-			cursorColor={colors.oxfordBlue}
-			textAlignVertical="center"
-		/>
+		>
+			<RNTextInput
+				style={{
+					height: 50,
+					minWidth: 250,
+					textAlign: "center",
+					fontSize: 20,
+					fontFamily: "Gilroy-ExtraBold",
+				}}
+				placeholder={!isActive ? placeholder : undefined}
+				placeholderTextColor={`${colors.oxfordBlue}33`}
+				editable={false}
+				{...props}
+			/>
+
+			<RNTextInput
+				style={{
+					...StyleSheet.absoluteFillObject,
+					minWidth: 250,
+					height: 50,
+					backgroundColor: "transparent",
+					textAlign: "center",
+					fontSize: 20,
+					fontFamily: "Gilroy-ExtraBold",
+					color: colors.oxfordBlue,
+				}}
+				cursorColor={colors.oxfordBlue}
+				textAlignVertical="center"
+				onFocus={() => setIsActive(true)}
+				onBlur={() => setIsActive(false)}
+				{...props}
+			/>
+		</View>
 	);
 };

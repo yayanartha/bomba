@@ -22,12 +22,11 @@ import {
 	GRID_NUM,
 	MINE_COOLDOWN,
 	MISSILE_COOLDOWN,
-	SHIP_HEIGHT_RATIO,
 	SHIP_MOVEMENT_SPEED,
 } from "../constants/values";
 import { randomNumberBetween } from "../utils/number";
 import { router } from "expo-router";
-import { Role } from "../constants/types";
+import type { Role } from "../constants/types";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface GameEngineContext {
@@ -76,11 +75,12 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 	const laneWidth = screenWidth / GRID_NUM;
 	const shipHeight = laneWidth;
 	const piratePosY = 160 + insets.top;
-	const marinePosY = screenHeight - insets.bottom - 24 - shipHeight;
+	const marinePosY = screenHeight - insets.bottom - 50 - shipHeight;
 	const pirateCollisionY = piratePosY + shipHeight - shipHeight * 0.2;
 	const marineCollisionY = marinePosY + shipHeight * 0.2;
 
 	const timerTimeout = useRef<NodeJS.Timeout>();
+	const transitionTimeout = useRef<NodeJS.Timeout>();
 
 	const runAtbGauge = () => {
 		atbGauge.value = withTiming(100, {
@@ -92,17 +92,17 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 	const startGame = (_role = role) => {
 		setRole(_role);
 
-		timerTimeout.current = setTimeout(() => {
-			setShowStartCountdown(false);
-			runAtbGauge();
-		}, 4000);
+		transitionTimeout.current = setTimeout(() => {
+			timerTimeout.current = setTimeout(() => {
+				setShowStartCountdown(false);
+				runAtbGauge();
+			}, 4000);
+		}, 2000);
 	};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		startGame(Role.Marine);
-
 		return () => {
+			if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
 			if (timerTimeout.current) clearTimeout(timerTimeout.current);
 		};
 	}, []);
