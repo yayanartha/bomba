@@ -19,9 +19,8 @@ import { Missile } from "../../components/missile";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGameEngine } from "../../hooks/use-game-engine";
 import { Role } from "../../constants/types";
-import { runOnJS } from "react-native-reanimated";
 import { useContextBridge } from "its-fine";
-import Reanimated, { FadeIn } from "react-native-reanimated";
+import Reanimated, { FadeIn, runOnJS } from "react-native-reanimated";
 import { Mine } from "../../components/mine";
 import { StartCountdown } from "../../components/start-countdown";
 import { useLocalSearchParams } from "expo-router";
@@ -51,25 +50,25 @@ export default function Channel() {
 	const flingLeftGesture = Gesture.Fling()
 		.direction(Directions.LEFT)
 		.onStart(() => {
-			if (atbGauge.value >= ATB_MOVE_POINT && laneIndex.value > 0) {
-				runOnJS(onMove)("left");
-			}
+			// if (atbGauge.value >= ATB_MOVE_POINT && laneIndex.value > 0) {
+			runOnJS(onMove)("left");
+			// }
 		});
 
 	const flingRightGesture = Gesture.Fling()
 		.direction(Directions.RIGHT)
 		.onStart(() => {
-			if (atbGauge.value >= ATB_MOVE_POINT && laneIndex.value < GRID_NUM - 1) {
-				runOnJS(onMove)("right");
-			}
+			// if (atbGauge.value >= ATB_MOVE_POINT && laneIndex.value < GRID_NUM - 1) {
+			runOnJS(onMove)("right");
+			// }
 		});
 
 	const tapGesture = Gesture.Tap().onStart(() => {
 		if (atbGauge.value >= ATB_ACTION_POINT && !actionCooldown.value) {
 			if (role === Role.Pirate) {
-				runOnJS(dropMine)();
+				dropMine();
 			} else {
-				runOnJS(fireMissile)();
+				fireMissile();
 			}
 		}
 	});
@@ -134,9 +133,13 @@ export default function Channel() {
 				}}
 			/> */}
 
-			{!!role && <PirateShip />}
+			{/* {!!role &&  */}
+			<PirateShip />
+			{/* } */}
 
-			{!!role && <MarineShip />}
+			{/* {!!role &&  */}
+			<MarineShip />
+			{/* } */}
 
 			{!!role && showStartCountdown && <StartCountdown />}
 

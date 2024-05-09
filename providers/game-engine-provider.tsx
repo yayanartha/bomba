@@ -11,7 +11,6 @@ import {
 	Easing,
 	type SharedValue,
 	cancelAnimation,
-	runOnJS,
 	useSharedValue,
 	withTiming,
 } from "react-native-reanimated";
@@ -83,6 +82,7 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 	const transitionTimeout = useRef<NodeJS.Timeout>();
 
 	const runAtbGauge = () => {
+		"worklet";
 		atbGauge.value = withTiming(100, {
 			duration: DEFAULT_ATB_FILL_RATE,
 			easing: Easing.linear,
@@ -111,7 +111,7 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 		cancelAnimation(atbGauge);
 		atbGauge.value =
 			atbGauge.value - (type === "move" ? ATB_MOVE_POINT : ATB_ACTION_POINT);
-		runOnJS(runAtbGauge)();
+		runAtbGauge();
 	};
 
 	const fireMissile = () => {
