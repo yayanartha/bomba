@@ -79,38 +79,36 @@ export default function Channel() {
 			edges={["top"]}
 			style={{ flex: 1, backgroundColor: colors.aero }}
 		>
-			{!!role && (
-				<GestureDetector
-					gesture={Gesture.Race(
-						tapGesture,
-						Gesture.Race(flingLeftGesture, flingRightGesture),
-					)}
-				>
-					<Reanimated.View entering={FadeIn.duration(400)} style={{ flex: 1 }}>
-						<Canvas style={{ flex: 1 }}>
-							<ContextBridge>
-								<Board />
+			<GestureDetector
+				gesture={Gesture.Race(
+					tapGesture,
+					Gesture.Race(flingLeftGesture, flingRightGesture),
+				)}
+			>
+				<Reanimated.View entering={FadeIn.duration(400)} style={{ flex: 1 }}>
+					<Canvas style={{ flex: 1 }}>
+						<ContextBridge>
+							<Board />
 
-								{missiles.map((laneIndex, idx) => (
-									<Missile key={`${laneIndex}-${idx}`} laneIndex={laneIndex} />
-								))}
+							{missiles.map((laneIndex, idx) => (
+								<Missile key={`${laneIndex}-${idx}`} laneIndex={laneIndex} />
+							))}
 
-								{mines.map((laneIndex, index) => (
-									<Mine key={`${laneIndex}-${index}`} laneIndex={laneIndex} />
-								))}
+							{mines.map((laneIndex, index) => (
+								<Mine key={`${laneIndex}-${index}`} laneIndex={laneIndex} />
+							))}
 
-								<ATBBar
-									progress={atbGauge}
-									movePoint={ATB_MOVE_POINT}
-									actionPoint={ATB_ACTION_POINT}
-								/>
+							<ATBBar
+								progress={atbGauge}
+								movePoint={ATB_MOVE_POINT}
+								actionPoint={ATB_ACTION_POINT}
+							/>
 
-								{!showStartCountdown && <CountdownTimer />}
-							</ContextBridge>
-						</Canvas>
-					</Reanimated.View>
-				</GestureDetector>
-			)}
+							{!showStartCountdown && <CountdownTimer />}
+						</ContextBridge>
+					</Canvas>
+				</Reanimated.View>
+			</GestureDetector>
 
 			{/* <View
 				style={{
@@ -142,7 +140,7 @@ export default function Channel() {
 
 			{!!role && showStartCountdown && <StartCountdown />}
 
-			{!role && <RoleSelection />}
+			{/* {!role && <RoleSelection />} */}
 		</SafeAreaView>
 	);
 }

@@ -1,7 +1,9 @@
 import { Line, vec, LinearGradient } from "@shopify/react-native-skia";
-import { useWindowDimensions } from "react-native";
 import { colors } from "../constants/colors";
-import { GRID_NUM } from "../constants/values";
+import { ATB_BAR_HEIGHT, GRID_NUM, ATB_BAR_Y } from "../constants/values";
+import { useGameEngine } from "../hooks/use-game-engine";
+import { randomNumberBetween } from "../utils/number";
+import { Wave } from "./wave";
 
 interface Props {
 	startPos: {
@@ -33,7 +35,7 @@ const GridLine = ({ startPos, endPos }: Props) => {
 };
 
 export const Board = () => {
-	const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+	const { screenWidth, screenHeight, laneWidth } = useGameEngine();
 	const gridSize = screenWidth / GRID_NUM;
 
 	return (
@@ -43,11 +45,22 @@ export const Board = () => {
 				return (
 					<GridLine
 						key={`vgrid-${index + 1}`}
-						startPos={{ x, y: 0 }}
+						startPos={{ x, y: ATB_BAR_Y + ATB_BAR_HEIGHT }}
 						endPos={{ x, y: screenHeight }}
 					/>
 				);
 			})}
+
+			{[...Array(10).keys()].map((_, index) => (
+				<Wave
+					key={`wave-${index}`}
+					x={randomNumberBetween(
+						(index % (GRID_NUM - 1)) * laneWidth,
+						screenWidth - laneWidth,
+					)}
+					y={randomNumberBetween(-screenHeight / 2, screenHeight - 30)}
+				/>
+			))}
 		</>
 	);
 };

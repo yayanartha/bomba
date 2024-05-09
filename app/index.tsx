@@ -45,7 +45,7 @@ export default function Index() {
 						x={0}
 						y={0}
 						size={60}
-						text="BOMBA!"
+						text="Bomba!"
 						width={screenWidth - 48}
 						center
 					/>

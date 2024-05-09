@@ -6,6 +6,7 @@ import {
 	TextAlign,
 	PaintStyle,
 	StrokeJoin,
+	Group,
 } from "@shopify/react-native-skia";
 import { colors } from "../constants/colors";
 import { useMemo } from "react";
@@ -87,7 +88,7 @@ export const Text = ({
 	}, [center, text, size, color, fonts]);
 
 	return (
-		<>
+		<Group>
 			{enableStroke && (
 				<Paragraph
 					x={x}
@@ -107,6 +108,6 @@ export const Text = ({
 				{...props}
 				paragraph={paragraph}
 			/>
-		</>
+		</Group>
 	);
 };
