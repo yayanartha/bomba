@@ -6,11 +6,13 @@ import {
 } from "@shopify/react-native-skia";
 import { useGameEngine } from "../hooks/use-game-engine";
 import {
+	interpolate,
 	useDerivedValue,
 	useFrameCallback,
 	useSharedValue,
 } from "react-native-reanimated";
 import { randomNumberBetween } from "../utils/number";
+import { Extrapolate } from "@shopify/react-native-skia";
 
 interface Props {
 	x: number;
@@ -61,8 +63,17 @@ export const Wave = ({ x, y }: Props) => {
 		];
 	});
 
+	const opacity = useDerivedValue(() => {
+		return interpolate(
+			positionY.value,
+			[0, screenHeight * 0.3],
+			[0, 1],
+			Extrapolate.CLAMP,
+		);
+	});
+
 	return (
-		<Group transform={transform}>
+		<Group transform={transform} opacity={opacity}>
 			<Image
 				image={wave}
 				width={randomNumberBetween(laneWidth, laneWidth * 2)}
