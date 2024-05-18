@@ -1,50 +1,43 @@
-import { Rect } from "@shopify/react-native-skia";
-import { MINE_SPEED } from "../constants/values";
-import {
-	useSharedValue,
-	withTiming,
-	cancelAnimation,
-	Easing,
-	runOnJS,
-} from "react-native-reanimated";
-import { useEffect, useState } from "react";
+import { Image, useImage } from "@shopify/react-native-skia";
+import { useSharedValue, useFrameCallback } from "react-native-reanimated";
 import { useGameEngine } from "../hooks/use-game-engine";
 import { Role } from "../constants/types";
+import { MINE_SPEED } from "../constants/values";
 
 interface Props {
 	laneIndex: number;
 }
 
 export const Mine = ({ laneIndex }: Props) => {
-	const { laneWidth, pirateCollisionY, screenHeight, role } = useGameEngine();
-	const [isActive, setIsActive] = useState(true);
+	const { screenHeight, laneWidth, pirateCollisionY, role } = useGameEngine();
+	const mine = useImage(require("../assets/mine.png"));
 
-	const mineSize = laneWidth * 0.3;
-	const posX = laneIndex * laneWidth + laneWidth / 2 - mineSize / 2;
+	const posX = laneIndex * laneWidth;
 	const posY = useSharedValue(
-		role === Role.Pirate ? pirateCollisionY - mineSize : -mineSize,
+		role === Role.Pirate ? pirateCollisionY - laneWidth : -laneWidth,
 	);
+	const isActive = useSharedValue(true);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(() => {
-		posY.value = withTiming(
-			screenHeight,
-			{ duration: MINE_SPEED, easing: Easing.in(Easing.ease) },
-			() => {
-				runOnJS(setIsActive)(false);
-			},
-		);
+	useFrameCallback(() => {
+		if (posY.value >= screenHeight && isActive.value) {
+			isActive.value = false;
+			// Send mine to WS.
+		} else {
+			posY.value += MINE_SPEED;
+		}
+	});
 
-		return () => {
-			cancelAnimation(posY);
-		};
-	}, [mineSize]);
-
-	if (!isActive) {
+	if (!isActive.value) {
 		return null;
 	}
 
 	return (
-		<Rect x={posX} y={posY} height={mineSize} width={mineSize} color="red" />
+		<Image
+			image={mine}
+			x={posX}
+			y={posY}
+			width={laneWidth}
+			height={laneWidth}
+		/>
 	);
 };

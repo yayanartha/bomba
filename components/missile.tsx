@@ -1,15 +1,8 @@
-import { Rect } from "@shopify/react-native-skia";
-import { MISSILE_SPEED } from "../constants/values";
-import {
-	useSharedValue,
-	withTiming,
-	cancelAnimation,
-	Easing,
-	runOnJS,
-} from "react-native-reanimated";
-import { useEffect, useState } from "react";
+import { Image, useImage } from "@shopify/react-native-skia";
+import { useSharedValue, useFrameCallback } from "react-native-reanimated";
 import { useGameEngine } from "../hooks/use-game-engine";
 import { Role } from "../constants/types";
+import { MISSILE_SPEED } from "../constants/values";
 
 interface Props {
 	laneIndex: number;
@@ -17,41 +10,34 @@ interface Props {
 
 export const Missile = ({ laneIndex }: Props) => {
 	const { screenHeight, laneWidth, marineCollisionY, role } = useGameEngine();
-	const [isActive, setIsActive] = useState(true);
+	const missile = useImage(require("../assets/missile.png"));
 
-	const missileWidth = laneWidth * 0.3;
-	const missileHeight = missileWidth * 1.7;
-	const posX = laneIndex * laneWidth + laneWidth / 2 - missileWidth / 2;
+	const posX = laneIndex * laneWidth;
 	const posY = useSharedValue(
-		role === Role.Marine ? marineCollisionY - missileHeight : screenHeight,
+		role === Role.Marine ? marineCollisionY - laneWidth : screenHeight,
 	);
+	const isActive = useSharedValue(true);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(() => {
-		posY.value = withTiming(
-			-missileHeight,
-			{ duration: MISSILE_SPEED, easing: Easing.out(Easing.ease) },
-			() => {
-				runOnJS(setIsActive)(false);
-			},
-		);
+	useFrameCallback(() => {
+		if (posY.value <= -laneWidth && isActive.value) {
+			isActive.value = false;
+			// TODO: Send missile to WS.
+		} else {
+			posY.value -= MISSILE_SPEED;
+		}
+	});
 
-		return () => {
-			cancelAnimation(posY);
-		};
-	}, [missileHeight]);
-
-	if (!isActive) {
+	if (!isActive.value) {
 		return null;
 	}
 
 	return (
-		<Rect
+		<Image
+			image={missile}
 			x={posX}
 			y={posY}
-			width={missileWidth}
-			height={missileHeight}
-			color="red"
+			width={laneWidth}
+			height={laneWidth}
 		/>
 	);
 };

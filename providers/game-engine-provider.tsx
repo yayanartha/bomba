@@ -21,6 +21,7 @@ import {
 	GRID_NUM,
 	MINE_COOLDOWN,
 	MISSILE_COOLDOWN,
+	SHIP_HEIGHT_RATIO,
 	SHIP_MOVEMENT_SPEED,
 } from "../constants/values";
 import { randomNumberBetween } from "../utils/number";
@@ -72,7 +73,7 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 	const atbGauge = useSharedValue(0);
 	const laneIndex = useSharedValue(randomNumberBetween(0, GRID_NUM - 1));
 	const laneWidth = screenWidth / GRID_NUM;
-	const shipHeight = laneWidth;
+	const shipHeight = laneWidth * SHIP_HEIGHT_RATIO;
 	const piratePosY = 160 + insets.top;
 	const marinePosY = screenHeight - insets.bottom - 50 - shipHeight;
 	const pirateCollisionY = piratePosY + shipHeight - shipHeight * 0.2;

@@ -40,25 +40,28 @@ export const MarineShip = () => {
 			);
 		}
 
-		posY.value = withTiming(role === Role.Marine ? marinePosY : screenHeight, {
+		const nextPosY = role === Role.Marine ? marinePosY : screenHeight;
+		// const nextPosY = marinePosY;
+		posY.value = withTiming(nextPosY, {
 			duration: 2000,
 			easing: Easing.in(Easing.ease),
 		});
 	}, []);
 
 	const animatedStyle = useAnimatedStyle(() => {
-		const scale = interpolate(
-			posY.value,
-			[defaultPosY, marinePosY],
-			[1, 0.5],
-			Extrapolate.CLAMP,
-		);
-
 		return {
 			left: isTransitioning.value ? posX.value : actualPosX.value,
 			top: posY.value,
-			transform: [{ scale }],
 		};
+	});
+
+	const flagScale = useDerivedValue(() => {
+		return interpolate(
+			posY.value,
+			[defaultPosY, marinePosY],
+			[1, 0.3],
+			Extrapolate.CLAMP,
+		);
 	});
 
 	return (
@@ -66,7 +69,7 @@ export const MarineShip = () => {
 			layout={LinearTransition.springify()}
 			style={[animatedStyle, { position: "absolute" }]}
 		>
-			<Ship />
+			<Ship image={require("../assets/marine.png")} flagScale={flagScale} />
 		</Reanimated.View>
 	);
 };

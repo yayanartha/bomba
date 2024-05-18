@@ -14,7 +14,7 @@ import { Role } from "../constants/types";
 import { Extrapolate } from "@shopify/react-native-skia";
 
 export const PirateShip = () => {
-	const { screenHeight, laneWidth, laneIndex, role, piratePosY } =
+	const { screenHeight, laneWidth, laneIndex, role, piratePosY, shipHeight } =
 		useGameEngine();
 	const contentHeight = 50 + 30 + laneWidth + 30 + laneWidth + 30 + 50;
 	const defaultPosY = screenHeight / 2 - contentHeight / 2 + 50 + 30 - 2;
@@ -39,25 +39,28 @@ export const PirateShip = () => {
 			);
 		}
 
-		posY.value = withTiming(role === Role.Pirate ? piratePosY : -laneWidth, {
+		const nextPosY = role === Role.Pirate ? piratePosY : -shipHeight;
+		// const nextPosY = piratePosY;
+		posY.value = withTiming(nextPosY, {
 			duration: 2000,
 			easing: Easing.in(Easing.ease),
 		});
 	}, []);
 
 	const animatedStyle = useAnimatedStyle(() => {
-		const scale = interpolate(
-			posY.value,
-			[defaultPosY, piratePosY],
-			[1, 0.5],
-			Extrapolate.CLAMP,
-		);
-
 		return {
 			left: isTransitioning.value ? posX.value : actualPosX.value,
 			top: posY.value,
-			transform: [{ scale }],
 		};
+	});
+
+	const flagScale = useDerivedValue(() => {
+		return interpolate(
+			posY.value,
+			[defaultPosY, piratePosY],
+			[1, 0.3],
+			Extrapolate.CLAMP,
+		);
 	});
 
 	return (
@@ -65,7 +68,7 @@ export const PirateShip = () => {
 			layout={LinearTransition.springify()}
 			style={[animatedStyle, { position: "absolute" }]}
 		>
-			<Ship />
+			<Ship image={require("../assets/pirate.png")} flagScale={flagScale} />
 		</Reanimated.View>
 	);
 };

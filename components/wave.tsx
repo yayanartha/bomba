@@ -17,14 +17,14 @@ import { Extrapolate } from "@shopify/react-native-skia";
 interface Props {
 	x: number;
 	y: number;
+	width: number;
+	height: number;
 }
 
-export const Wave = ({ x, y }: Props) => {
+export const Wave = ({ x, y, width, height }: Props) => {
 	const { laneWidth, screenWidth, screenHeight } = useGameEngine();
 	const wave = useAnimatedImageValue(require("../assets/wave.webp"));
-	const waveWidth = laneWidth * 0.8;
 	const waveGap = laneWidth * 0.2;
-	const waveHeight = randomNumberBetween(30, 60);
 
 	const positionX = useSharedValue(x);
 	const translationX = useSharedValue(randomNumberBetween(-waveGap, waveGap));
@@ -67,24 +67,14 @@ export const Wave = ({ x, y }: Props) => {
 		return interpolate(
 			positionY.value,
 			[0, screenHeight * 0.3],
-			[0, 1],
+			[0, 0.8],
 			Extrapolate.CLAMP,
 		);
 	});
 
 	return (
 		<Group transform={transform} opacity={opacity}>
-			<Image
-				image={wave}
-				width={randomNumberBetween(laneWidth, laneWidth * 2)}
-				height={waveHeight}
-				rect={rect(
-					0,
-					0,
-					randomNumberBetween(waveWidth, waveWidth * 2),
-					waveHeight,
-				)}
-			/>
+			<Image image={wave} width={laneWidth} height={laneWidth / 2} />
 		</Group>
 	);
 };

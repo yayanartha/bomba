@@ -50,25 +50,25 @@ export default function Channel() {
 	const flingLeftGesture = Gesture.Fling()
 		.direction(Directions.LEFT)
 		.onStart(() => {
-			// if (atbGauge.value >= ATB_MOVE_POINT && laneIndex.value > 0) {
-			runOnJS(onMove)("left");
-			// }
+			if (atbGauge.value >= ATB_MOVE_POINT && laneIndex.value > 0) {
+				runOnJS(onMove)("left");
+			}
 		});
 
 	const flingRightGesture = Gesture.Fling()
 		.direction(Directions.RIGHT)
 		.onStart(() => {
-			// if (atbGauge.value >= ATB_MOVE_POINT && laneIndex.value < GRID_NUM - 1) {
-			runOnJS(onMove)("right");
-			// }
+			if (atbGauge.value >= ATB_MOVE_POINT && laneIndex.value < GRID_NUM - 1) {
+				runOnJS(onMove)("right");
+			}
 		});
 
 	const tapGesture = Gesture.Tap().onStart(() => {
 		if (atbGauge.value >= ATB_ACTION_POINT && !actionCooldown.value) {
 			if (role === Role.Pirate) {
-				dropMine();
+				runOnJS(dropMine)();
 			} else {
-				fireMissile();
+				runOnJS(fireMissile)();
 			}
 		}
 	});
@@ -89,12 +89,12 @@ export default function Channel() {
 						<ContextBridge>
 							<Board />
 
-							{missiles.map((laneIndex, idx) => (
-								<Missile key={`${laneIndex}-${idx}`} laneIndex={laneIndex} />
+							{mines.map((laneIndex, idx) => (
+								<Mine key={`${laneIndex}-${idx}`} laneIndex={laneIndex} />
 							))}
 
-							{mines.map((laneIndex, index) => (
-								<Mine key={`${laneIndex}-${index}`} laneIndex={laneIndex} />
+							{missiles.map((laneIndex, idx) => (
+								<Missile key={`${laneIndex}-${idx}`} laneIndex={laneIndex} />
 							))}
 
 							<ATBBar
@@ -109,7 +109,7 @@ export default function Channel() {
 				</Reanimated.View>
 			</GestureDetector>
 
-			{/* <View
+			<View
 				style={{
 					width: screenWidth,
 					height: 1,
@@ -119,9 +119,9 @@ export default function Channel() {
 					position: "absolute",
 					top: pirateCollisionY,
 				}}
-			/> */}
+			/>
 
-			{/* <View
+			<View
 				style={{
 					width: screenWidth,
 					height: 1,
@@ -131,7 +131,7 @@ export default function Channel() {
 					borderStyle: "dashed",
 					borderColor: "red",
 				}}
-			/> */}
+			/>
 
 			{/* {!!role &&  */}
 			<PirateShip />

@@ -59,6 +59,8 @@ export const Board = () => {
 						screenWidth - laneWidth,
 					)}
 					y={randomNumberBetween(-screenHeight / 2, screenHeight - 30)}
+					width={randomNumberBetween(laneWidth, laneWidth * 2)}
+					height={randomNumberBetween(30, laneWidth)}
 				/>
 			))}
 		</>
