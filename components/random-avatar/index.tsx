@@ -14,7 +14,7 @@ export const RandomAvatar = ({
 	size = 40,
 	square = false,
 }: AvatarProps) => {
-	const colorOptions = [colors.persianBlue, colors.yellow, colors.white];
+	const colorOptions = [colors.red, colors.yellow, colors.white];
 
 	const data = generateData(name, colorOptions);
 

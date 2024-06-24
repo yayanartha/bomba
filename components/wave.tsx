@@ -17,8 +17,8 @@ import { Extrapolate } from "@shopify/react-native-skia";
 interface Props {
 	x: number;
 	y: number;
-	width: number;
-	height: number;
+	width?: number;
+	height?: number;
 }
 
 export const Wave = ({ x, y, width, height }: Props) => {
@@ -74,7 +74,11 @@ export const Wave = ({ x, y, width, height }: Props) => {
 
 	return (
 		<Group transform={transform} opacity={opacity}>
-			<Image image={wave} width={laneWidth} height={laneWidth / 2} />
+			<Image
+				image={wave}
+				width={width || laneWidth}
+				height={height || laneWidth / 2}
+			/>
 		</Group>
 	);
 };

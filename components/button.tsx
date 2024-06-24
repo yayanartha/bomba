@@ -1,5 +1,5 @@
 import { Canvas } from "@shopify/react-native-skia";
-import { Pressable } from "react-native";
+import { ActivityIndicator, Pressable } from "react-native";
 import { Text } from "./text";
 import { colors } from "../constants/colors";
 import Reanimated, {
@@ -14,6 +14,8 @@ interface Props {
 	backgroundColor: string;
 	foregroundColor?: string;
 	onPresss?(): void;
+	isLoading?: boolean;
+	disabled?: boolean;
 }
 
 export const Button = ({
@@ -22,6 +24,8 @@ export const Button = ({
 	backgroundColor,
 	foregroundColor = colors.white,
 	onPresss,
+	isLoading = false,
+	disabled = false,
 }: Props) => {
 	const scale = useSharedValue(1);
 
@@ -31,6 +35,8 @@ export const Button = ({
 		};
 	});
 
+	const isDisabled = isLoading || disabled;
+
 	return (
 		<Reanimated.View
 			style={[
@@ -39,7 +45,9 @@ export const Button = ({
 					borderWidth: 1.5,
 					borderColor: colors.oxfordBlue,
 					borderRadius: 16,
-					backgroundColor,
+					backgroundColor: isDisabled
+						? `${backgroundColor}B3`
+						: backgroundColor,
 					overflow: "hidden",
 				},
 			]}
@@ -52,6 +60,7 @@ export const Button = ({
 				onPressOut={() => {
 					scale.value = withSpring(1);
 				}}
+				disabled={isDisabled}
 				style={{
 					width,
 					height: 50,
@@ -59,25 +68,29 @@ export const Button = ({
 					justifyContent: "center",
 				}}
 			>
-				<Canvas
-					style={{
-						width,
-						height: 50,
-						alignItems: "center",
-						justifyContent: "center",
-						borderRadius: 16,
-					}}
-				>
-					<Text
-						text={text}
-						width={width - 32}
-						x={16}
-						y={25 - 16}
-						center
-						enableStroke={false}
-						color={foregroundColor}
-					/>
-				</Canvas>
+				{isLoading ? (
+					<ActivityIndicator color={foregroundColor} />
+				) : (
+					<Canvas
+						style={{
+							width,
+							height: 50,
+							alignItems: "center",
+							justifyContent: "center",
+							borderRadius: 16,
+						}}
+					>
+						<Text
+							text={text}
+							width={width - 32}
+							x={16}
+							y={25 - 16}
+							center
+							enableStroke={false}
+							color={foregroundColor}
+						/>
+					</Canvas>
+				)}
 			</Pressable>
 		</Reanimated.View>
 	);

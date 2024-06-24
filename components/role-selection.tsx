@@ -7,13 +7,14 @@ import { Text } from "./text";
 import Reanimated, { FadeInDown, FadeOut } from "react-native-reanimated";
 import { colors } from "../constants/colors";
 import { Role } from "../constants/types";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Button } from "./button";
 import { Redirect, router } from "expo-router";
 
 export const RoleSelection = () => {
 	const { screenWidth, screenHeight, startGame, laneWidth } = useGameEngine();
-	const { username, players, selectRole } = useGameChannel();
+	const { username, players, selectRole, isStarted, commenceBattle } =
+		useGameChannel();
 	const contentHeight = 50 + 30 + laneWidth + 30 + laneWidth + 30 + 50;
 
 	console.log("PLAYERS", players);
@@ -44,8 +45,14 @@ export const RoleSelection = () => {
 			return Alert.alert("Hold On", "Must fill in all roles first");
 		}
 
-		startGame(myRole);
+		commenceBattle();
 	};
+
+	useEffect(() => {
+		if (isStarted) {
+			startGame(myRole as Role);
+		}
+	}, [isStarted, myRole]);
 
 	if (players.length < 1) {
 		return <Redirect href="/" />;

@@ -29,7 +29,7 @@ export const TextInput = ({ placeholder, ...props }: TextInputProps) => {
 					fontFamily: "Gilroy-ExtraBold",
 				}}
 				placeholder={!isActive ? placeholder : undefined}
-				placeholderTextColor={`${colors.oxfordBlue}33`}
+				placeholderTextColor={`${colors.oxfordBlue}44`}
 				editable={false}
 				{...props}
 			/>

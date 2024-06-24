@@ -119,7 +119,6 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 		setMissiles((prevState) => [...prevState, laneIndex.value]);
 		actionCooldown.value = 1;
 		actionCooldown.value = withTiming(0, { duration: MISSILE_COOLDOWN });
-		// Publish to channel
 		reduceAtb("action");
 	};
 
@@ -127,7 +126,6 @@ export const GameEngineProvider = ({ children }: PropsWithChildren) => {
 		setMines((prevState) => [...prevState, laneIndex.value]);
 		actionCooldown.value = 1;
 		actionCooldown.value = withTiming(0, { duration: MINE_COOLDOWN });
-		// Publish to channel
 		reduceAtb("action");
 	};
 

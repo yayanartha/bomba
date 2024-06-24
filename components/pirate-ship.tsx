@@ -39,8 +39,8 @@ export const PirateShip = () => {
 			);
 		}
 
-		const nextPosY = role === Role.Pirate ? piratePosY : -shipHeight;
-		// const nextPosY = piratePosY;
+		// const nextPosY = role === Role.Pirate ? piratePosY : -shipHeight;
+		const nextPosY = piratePosY;
 		posY.value = withTiming(nextPosY, {
 			duration: 2000,
 			easing: Easing.in(Easing.ease),

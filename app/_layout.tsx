@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { GameChannelProvider } from "../providers/game-channel-provider";
 import { FiberProvider } from "its-fine";
+import { UserProvider } from "../providers/user-provider";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,12 +27,14 @@ export default function RootLayout() {
 	return (
 		<GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
 			<FiberProvider>
-				<GameChannelProvider>
-					<Stack screenOptions={{ headerShown: false }}>
-						<Stack.Screen name="index" />
-						<Stack.Screen name="channel" />
-					</Stack>
-				</GameChannelProvider>
+				<UserProvider>
+					<GameChannelProvider>
+						<Stack screenOptions={{ headerShown: false }}>
+							<Stack.Screen name="index" />
+							<Stack.Screen name="channel" />
+						</Stack>
+					</GameChannelProvider>
+				</UserProvider>
 			</FiberProvider>
 		</GestureHandlerRootView>
 	);
