@@ -63,7 +63,7 @@ export const GameChannelProvider = ({ children }: PropsWithChildren) => {
 				await joinChannel(channelName, channels.data[0].id, username);
 			}
 		} catch (error) {
-			throw new Error(JSON.stringify(error, undefined, 2));
+			throw error;
 		} finally {
 			setLoading(false);
 		}
